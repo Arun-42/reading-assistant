@@ -48,55 +48,55 @@ document.addEventListener('DOMContentLoaded', () => {
 
 document.addEventListener('DOMContentLoaded', function() {
   // Create a resize handle element
-  const resizeHandle = document.createElement('div');
-  resizeHandle.id = 'resize-handle';
-  resizeHandle.style.cssText = `
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 6px;
-    height: 100%;
-    cursor: ew-resize;
-    background: transparent;
-    z-index: 1001;
-  `;
+//   const resizeHandle = document.createElement('div');
+//   resizeHandle.id = 'resize-handle';
+//   resizeHandle.style.cssText = `
+//     position: absolute;
+//     left: 0;
+//     top: 0;
+//     width: 6px;
+//     height: 100%;
+//     cursor: ew-resize;
+//     background: transparent;
+//     z-index: 1001;
+//   `;
   
-  document.body.appendChild(resizeHandle);
+//   document.body.appendChild(resizeHandle);
   
-  let isResizing = false;
-  let initialWidth, initialMouseX;
+//   let isResizing = false;
+//   let initialWidth, initialMouseX;
   
-  resizeHandle.addEventListener('mousedown', function(e) {
-    isResizing = true;
-    initialWidth = document.body.offsetWidth;
-    initialMouseX = e.clientX;
-    document.body.style.transition = 'none';
+//   resizeHandle.addEventListener('mousedown', function(e) {
+//     isResizing = true;
+//     initialWidth = document.body.offsetWidth;
+//     initialMouseX = e.clientX;
+//     document.body.style.transition = 'none';
     
-    // Add overlay to prevent text selection during resize
-    const overlay = document.createElement('div');
-    overlay.id = 'resize-overlay';
-    overlay.style.cssText = `
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      z-index: 10000;
-      cursor: ew-resize;
-    `;
-    document.body.appendChild(overlay);
+//     // Add overlay to prevent text selection during resize
+//     const overlay = document.createElement('div');
+//     overlay.id = 'resize-overlay';
+//     overlay.style.cssText = `
+//       position: fixed;
+//       top: 0;
+//       left: 0;
+//       right: 0;
+//       bottom: 0;
+//       z-index: 10000;
+//       cursor: ew-resize;
+//     `;
+//     document.body.appendChild(overlay);
     
-    e.preventDefault();
-  });
+//     e.preventDefault();
+//   });
   
-  document.addEventListener('mousemove', function(e) {
-    if (!isResizing) return;
+//   document.addEventListener('mousemove', function(e) {
+//     if (!isResizing) return;
     
-    const newWidth = initialWidth - (e.clientX - initialMouseX);
-    if (newWidth >= 250 && newWidth <= 500) {
-      document.body.style.width = newWidth + 'px';
-    }
-  });
+//     const newWidth = initialWidth - (e.clientX - initialMouseX);
+//     if (newWidth >= 250 && newWidth <= 500) {
+//       document.body.style.width = newWidth + 'px';
+//     }
+//   });
   
   document.addEventListener('mouseup', function() {
     if (isResizing) {

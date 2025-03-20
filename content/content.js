@@ -9,12 +9,17 @@ function injectSidebar(selectedText, currentTabUrl) { // Modified to accept sele
     }
 
     sidebarIframe = document.createElement('iframe');
+
     sidebarIframe.src = browser.runtime.getURL("sidebar/sidebar.html"); // Path to your sidebar HTML
+
+    let sidebarWidth = 450;
+    sidebarIframe.style.width = `${sidebarWidth}px`; // Set initial width using pixels - important for resize to work correctly
+    sidebarIframe.style.height = '100vh';
     sidebarIframe.style.cssText = `
             position: fixed;
             top: 0;
             right: 0;
-            width: 300px; /* Match CSS width */
+            /*width: 300px;  Match CSS width */
             height: 100vh;
             border: none;
             z-index: 1001; /* Higher than sidebar's z-index to be on top if needed */
@@ -34,6 +39,37 @@ function injectSidebar(selectedText, currentTabUrl) { // Modified to accept sele
             action: "setInputText",              // <-- NEW ACTION
             text: selectedText                  // <-- Send selectedText again, specifically for input
         }, "*");
+
+        // // --- RESIZE HANDLE LOGIC (inside iframe.onload for sidebar context) ---
+        // const handle = sidebarIframe.contentDocument.getElementById('resize-handle'); // Get handle in iframe's document
+        // let isResizing = false;
+        // let startX = 0;
+
+        // handle.addEventListener('mousedown', function(e) {
+        //     isResizing = true;
+        //     startX = e.clientX;
+        //     document.body.style.userSelect = 'none'; // Disable text selection during resize
+        // });
+
+        // document.addEventListener('mousemove', function(e) { // Attach to document for global drag
+        //     if (!isResizing) return;
+
+        //     const delta = e.clientX - startX;
+        //     sidebarWidth += delta; // Adjust sidebarWidth based on mouse movement
+
+        //     if (sidebarWidth < 200) sidebarWidth = 200; // Minimum width (optional)
+        //     if (sidebarWidth > window.innerWidth / 2) sidebarWidth = window.innerWidth / 2; // Optional max width (prevent taking over entire screen)
+
+
+        //     sidebarIframe.style.width = `${sidebarWidth}px`; // Update iframe width dynamically
+        //     startX = e.clientX; // Update startX for next delta calculation
+        // });
+
+        // document.addEventListener('mouseup', function() { // Attach to document for global mouseup
+        //     isResizing = false;
+        //     document.body.style.userSelect = 'auto'; // Re-enable text selection
+        // });
+        // --- END RESIZE HANDLE LOGIC ---
     };
 }
 
