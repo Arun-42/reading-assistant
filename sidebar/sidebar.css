@@ -94,3 +94,21 @@ h1 {
     overflow-y: auto; /* Enable vertical scroll if response is long */
     max-height: 200px; /* Limit max height for scrollable area */
 }
+/* Add these styles to sidebar.css */
+
+/* ... (previous styles for test-api-button, gemini-response-area, etc.) ... */
+
+#gemini-response-area.loading-response {
+    opacity: 0.7; /* Slightly dim the response area when loading */
+    font-style: italic; /* Indicate loading with italic text */
+}
+
+#gemini-response-area .response-chunk {
+    display: inline-block; /* Display chunks inline */
+    /* You can add more styling to individual chunks if needed, e.g., background, etc. */
+}
+
+#gemini-response-area.error-response {
+    color: darkred; /* Make error messages more visually distinct */
+    font-weight: bold;
+}

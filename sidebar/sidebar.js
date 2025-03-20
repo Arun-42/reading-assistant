@@ -64,61 +64,64 @@ saveApiKeyButton.addEventListener('click', () => {
 
 
 
-// Event listener for "Test Gemini API" button (NEW)
+// In sidebar/sidebar.js (inside testApiButton.addEventListener('click', ...))
+
 testApiButton.addEventListener('click', () => {
-    geminiResponseArea.textContent = "Testing API, please wait..."; // Initial loading message
-    geminiResponseArea.classList.remove('error-response'); // Clear any error class
-    geminiResponseArea.classList.add('loading-response'); // Add loading class if you want loading styling
+    geminiResponseArea.textContent = ""; // Clear previous content
+    geminiResponseArea.innerHTML = '<span class="loading-indicator">Loading response...</span>'; // Set loading indicator using innerHTML for span
+    geminiResponseArea.classList.remove('error-response');
+    geminiResponseArea.classList.add('loading-response');
+
 
     getApiKey().then(result => {
         const apiKey = result.geminiApiKey;
         if (!apiKey) {
-            geminiResponseArea.textContent = "API key not set. Please enter and save your API key.";
-            geminiResponseArea.classList.remove('loading-response');
-            geminiResponseArea.classList.add('error-response'); // Add error class for styling
-            return; // Stop if API key is not set
-        }
-
-        if (!isValidApiKeyFormat(apiKey)) {
-            geminiResponseArea.textContent = "Invalid API key format. Please check and save again.";
+            geminiResponseArea.innerHTML = '<span class="error-message">API key not set. Please enter and save your API key.</span>'; // Use innerHTML for error span
             geminiResponseArea.classList.remove('loading-response');
             geminiResponseArea.classList.add('error-response');
-            return; // Stop if API key format is invalid
+            return;
+        }
+        if (!isValidApiKeyFormat(apiKey)) {
+            geminiResponseArea.innerHTML = '<span class="error-message">Invalid API key format. Please check and save again.</span>'; // Use innerHTML for error span
+            geminiResponseArea.classList.remove('loading-response');
+            geminiResponseArea.classList.add('error-response');
+            return;
         }
 
 
-        const userMessage = { role: "user", parts: [{ text: "Hello Gemini, this is a test." }] }; // Simple test message
-        const messages = [userMessage]; // Array of messages for the API request
+        const userMessage = { role: "user", parts: [{ text: "Hello Gemini, write a 200 word story in changes in human body at age 0.2" }] };
+        const messages = [userMessage];
 
         streamGenerateContent(apiKey, messages)
             .then(response => {
-                geminiResponseArea.textContent = ""; // Clear loading message, prepare for streaming
+                geminiResponseArea.innerHTML = ""; // Clear loading indicator, prepare for streaming
 
                 handleStreamingResponse(response,
-                    (data) => { // messageCallback for handling each SSE data event
+                    (data) => { // messageCallback
                         if (data.candidates && data.candidates[0].content && data.candidates[0].content.parts) {
                             const textPart = data.candidates[0].content.parts[0].text;
                             if (textPart) {
-                                geminiResponseArea.textContent += textPart; // Append new text to response area
+                                geminiResponseArea.textContent += textPart; // Append span to response area
+                                geminiResponseArea.scrollTop = geminiResponseArea.scrollHeight; // Auto-scroll to bottom
                             }
                         }
                     },
-                    (errorMessage) => { // errorCallback for handling stream or parsing errors
-                        geminiResponseArea.textContent = `Error: ${errorMessage}`;
+                    (errorMessage) => { // errorCallback
+                        geminiResponseArea.innerHTML = `<span class="error-message">Error: ${errorMessage}</span>`; // Use innerHTML for error span
                         geminiResponseArea.classList.remove('loading-response');
                         geminiResponseArea.classList.add('error-response');
                     }
                 );
             })
-            .catch(apiError => { // Catch errors from streamGenerateContent (e.g., network errors, API errors)
-                geminiResponseArea.textContent = `API Error: ${apiError.message}`;
+            .catch(apiError => { // catch API errors
+                geminiResponseArea.innerHTML = `<span class="error-message">API Error: ${apiError.message}</span>`; // Use innerHTML for error span
                 geminiResponseArea.classList.remove('loading-response');
                 geminiResponseArea.classList.add('error-response');
             });
 
 
-    }).catch(storageError => { // Catch errors from getApiKey (storage access issues)
-        geminiResponseArea.textContent = `Error accessing API key storage.`;
+    }).catch(storageError => { // catch storage errors
+        geminiResponseArea.innerHTML = '<span class="error-message">Error accessing API key storage.</span>'; // Use innerHTML for error span
         geminiResponseArea.classList.remove('loading-response');
         geminiResponseArea.classList.add('error-response');
         console.error("Error getting API key from storage:", storageError);
