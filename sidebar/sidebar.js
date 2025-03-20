@@ -184,16 +184,34 @@ userQuestionInput.addEventListener('keydown', function(event) {
             return;
         }
 
-        // Construct the TRANSPARENT CONTEXT PROMPT - now displayed in chat
-        const pageContextText = localStorage.getItem('currentPageText') || "Page context not available.";
-        const currentSelectedText = localStorage.getItem('currentSelectedText') || ""; // Corrected variable name
+        let contextPrompt = userQuestion; // Default prompt is just the user question
 
-        const contextPrompt = `I am reading this:\n<content>\n${pageContextText}\n</content>\n\nIn this,\n> ${currentSelectedText}\n\n${userQuestion}`; // Corrected variable name
+        // console.log('user question', contextPrompt);
+        // if (conversationHistory.length === 0) {
+        //         // Construct CONTEXT PROMPT only for the first turn
+        //         const pageContextText = localStorage.getItem('currentPageText') || "Page context not available.";
+        //         const currentSelectedText = localStorage.getItem('currentSelectedText') || "";
+
+        //         contextPrompt = `I am reading this:\n<content>\n${pageContextText}\n</content>\n\nIn this,\n> ${currentSelectedText}\n\n${userQuestion}`; // Context Prompt for FIRST turn
+        //     } else {
+                contextPrompt = userQuestion; // For subsequent turns, just use the user question
+        // }
+        // console.log('after', contextPrompt);
 
         // Display the FULL CONTEXT PROMPT as the user message in chat
         const userMessageDiv = document.createElement('div');
         userMessageDiv.className = 'user-message';
-        userMessageDiv.textContent = contextPrompt; // Display full context prompt as user message
+        // userMessageDiv.textContent = contextPrompt; // Display full context prompt as user message
+        if (contextPrompt.includes('<content>')) {
+            // Replace <content>...</content> with <details><content>...</content></details>
+            const wrappedContent = contextPrompt.replace(
+                /(<content>.*?<\/content>)/gs, 
+                '<details>$1</details>'
+            );
+            userMessageDiv.innerHTML = wrappedContent;
+        } else {
+            userMessageDiv.innerHTML = contextPrompt;
+        }
         chatHistory.appendChild(userMessageDiv); // Append to chatHistory, not geminiResponseArea
 
         const aiResponseDiv = document.createElement('div');
@@ -299,6 +317,7 @@ window.addEventListener('message', function(event) {
 
                         // NEW: Populate input box with full context prompt AFTER extraction (and focus)
                         const contextPromptForInput = `I am reading this:\n<content>\n${extractedText}\n</content>\n\nIn this,\n> ${selectedText}\n\n`;
+                        // const contextPromptForInput = ``;
                         userQuestionInput.value = contextPromptForInput; // Populate input
 
                         userQuestionInput.focus(); // Set focus to input box

@@ -24,6 +24,7 @@ body {
   /* resize: horizontal; Make sidebar resizable */
   min-width: 250px; /* Minimum width */
   max-width: 500px; /* Maximum width */
+  padding-left: 6px;
 }
 
 /* Add a drag handle on the left side */
@@ -182,6 +183,7 @@ h1 {
   background-color: #7c88ff;
   color: white;
   border-bottom-right-radius: 2px;
+  white-space: pre-line;
 }
 
 .ai-response {
@@ -281,4 +283,5 @@ h1 {
     height: 100%;
     background-color: #ddd; /* Light gray handle background */
     cursor: col-resize; /* Cursor style to indicate resizing */
+    z-index: 2000
 }

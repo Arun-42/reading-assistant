@@ -40,35 +40,83 @@ function injectSidebar(selectedText, currentTabUrl) { // Modified to accept sele
             text: selectedText                  // <-- Send selectedText again, specifically for input
         }, "*");
 
-        // // --- RESIZE HANDLE LOGIC (inside iframe.onload for sidebar context) ---
-        // const handle = sidebarIframe.contentDocument.getElementById('resize-handle'); // Get handle in iframe's document
-        // let isResizing = false;
-        // let startX = 0;
+        // --- RESIZE HANDLE LOGIC (inside iframe.onload for sidebar context) ---
+const handle = sidebarIframe.contentDocument.getElementById('resize-handle');
+let isResizing = false;
+let startX = 0;
+let initialWidth = 0;
 
-        // handle.addEventListener('mousedown', function(e) {
-        //     isResizing = true;
-        //     startX = e.clientX;
-        //     document.body.style.userSelect = 'none'; // Disable text selection during resize
-        // });
+// Function to start resizing
+function startResize(e) {
+    isResizing = true;
+    startX = e.clientX;
+    
+    // Get the current width of the sidebar from its computed style
+    initialWidth = parseInt(window.getComputedStyle(sidebarIframe).width, 10);
+    
+    document.body.style.userSelect = 'none';
+    document.body.style.cursor = 'ew-resize';
+}
 
-        // document.addEventListener('mousemove', function(e) { // Attach to document for global drag
-        //     if (!isResizing) return;
+// Function to do the resizing
+function doResize(e) {
+    if (!isResizing) return;
+    
+    const delta = e.clientX - startX;
+    const newWidth = initialWidth - delta;
+    
+    // Apply min/max constraints
+    sidebarWidth = Math.min(
+        Math.max(newWidth, 200),
+        window.innerWidth / 2
+    );
+    
+    sidebarIframe.style.width = `${sidebarWidth}px`;
+}
 
-        //     const delta = e.clientX - startX;
-        //     sidebarWidth += delta; // Adjust sidebarWidth based on mouse movement
+// Function to stop resizing
+function stopResize() {
+    if (!isResizing) return;
+    
+    isResizing = false;
+    document.body.style.userSelect = '';
+    document.body.style.cursor = '';
+}
 
-        //     if (sidebarWidth < 200) sidebarWidth = 200; // Minimum width (optional)
-        //     if (sidebarWidth > window.innerWidth / 2) sidebarWidth = window.innerWidth / 2; // Optional max width (prevent taking over entire screen)
+// Add event to iframe handle
+handle.addEventListener('mousedown', function(e) {
+    e.preventDefault(); // Prevent text selection
+    
+    // Get the correct clientX by accounting for iframe's position
+    const iframeRect = sidebarIframe.getBoundingClientRect();
+    const clientX = iframeRect.left + e.clientX;
+    
+    // Create a new event-like object with the correct clientX
+    const newEvent = {
+        clientX: clientX
+    };
+    
+    startResize(newEvent);
+});
 
+// Add main document events
+document.addEventListener('mousemove', doResize);
+document.addEventListener('mouseup', stopResize);
+document.addEventListener('mouseleave', stopResize);
 
-        //     sidebarIframe.style.width = `${sidebarWidth}px`; // Update iframe width dynamically
-        //     startX = e.clientX; // Update startX for next delta calculation
-        // });
+// Ensure we're capturing events from the iframe too
+sidebarIframe.contentDocument.addEventListener('mousemove', function(e) {
+    // Only process if we're already resizing (started from handle)
+    if (!isResizing) return;
+    
+    // Convert iframe coordinates to main document coordinates
+    const iframeRect = sidebarIframe.getBoundingClientRect();
+    const clientX = iframeRect.left + e.clientX;
+    
+    doResize({ clientX: clientX });
+});
 
-        // document.addEventListener('mouseup', function() { // Attach to document for global mouseup
-        //     isResizing = false;
-        //     document.body.style.userSelect = 'auto'; // Re-enable text selection
-        // });
+sidebarIframe.contentDocument.addEventListener('mouseup', stopResize);
         // --- END RESIZE HANDLE LOGIC ---
     };
 }
