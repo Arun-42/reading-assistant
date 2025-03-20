@@ -12,7 +12,8 @@
     "permissions": [
         "contextMenus",
         "activeTab",
-        "storage"
+        "storage",
+        "https://generativelanguage.googleapis.com/"
     ],
     "content_scripts": [
         {

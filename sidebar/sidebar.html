@@ -10,18 +10,24 @@
         <h1>Text QA Extension</h1>
 
         <div id="api-key-input-area">
+            <!-- API key input elements (same as before) -->
             <label for="api-key">Gemini API Key:</label>
             <input type="text" id="api-key" placeholder="Enter your Gemini API key">
             <button id="save-api-key">Save Key</button>
-            <p id="api-key-status"></p> 
-            <!-- Status message area -->
+            <p id="api-key-status"></p>
+        </div>
+
+        <button id="test-api-button">Test Gemini API</button> <!-- New Test Button -->
+
+        <div id="gemini-response-area"> <!-- New Response Area -->
+            <!-- Gemini API responses will be displayed here -->
         </div>
 
         <p>This is the sidebar.</p>
         <div id="selected-text-display">
-            <!-- Selected text will be displayed here -->
+            <!-- Selected text display area (same as before) -->
         </div>
     </div>
-    <script src="sidebar.js"></script>
+    <script src="sidebar.js" type="module"></script>
 </body>
 </html>
