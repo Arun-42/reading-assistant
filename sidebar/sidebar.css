@@ -1,0 +1,68 @@
+body {
+    font-family: sans-serif;
+    width: 300px; /* Set a fixed width for the sidebar */
+    height: 100vh; /* Make it take up the full viewport height */
+    position: fixed; /* Fixed position so it stays in place */
+    top: 0;
+    right: 0;
+    background-color: #f0f0f0; /* Light gray background */
+    border-left: 1px solid #ccc; /* Separator line on the left */
+    box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    z-index: 1000; /* Ensure it's on top of page content */
+    padding: 20px;
+    box-sizing: border-box; /* Include padding in width/height */
+    overflow-y: auto; /* Enable vertical scrolling if content overflows */
+}
+
+#sidebar-content {
+    /* Styles for the content within the sidebar if needed */
+}
+
+h1 {
+    margin-top: 0;
+    font-size: 1.2em;
+}
+
+/* Add these styles to sidebar.css */
+
+#api-key-input-area {
+    margin-bottom: 15px;
+}
+
+#api-key-input-area label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+#api-key-input-area input[type="text"] {
+    width: calc(100% - 10px); /* Adjust width for padding/border */
+    padding: 8px;
+    margin-bottom: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box; /* Include padding and border in element's total width and height */
+}
+
+#api-key-input-area button {
+    padding: 8px 15px;
+    background-color: #007bff; /* Example button color */
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+#api-key-input-area button:hover {
+    background-color: #0056b3; /* Darker shade on hover */
+}
+
+#api-key-status {
+    font-size: 0.9em;
+    margin-top: 5px;
+    color: green; /* Default status color */
+}
+
+#api-key-status.error {
+    color: red; /* Error status color */
+}
