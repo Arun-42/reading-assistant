@@ -10,12 +10,25 @@ browser.contextMenus.create({
 // Listen for clicks on the context menu item
 browser.contextMenus.onClicked.addListener((info, tab) => {
     if (info.menuItemId === "ask-about-selection") {
-        console.log("Selected text:", info.selectionText); // Keep this for verification
+        console.log("Selected text:", info.selectionText);
 
-        // Send a message to the content script to open the sidebar AND pass the selected text
-        browser.tabs.sendMessage(tab.id, {
-            action: "openSidebar",
-            selectedText: info.selectionText // Include selectedText in the message
-        });
+        // Get current tab URL in background script
+        browser.tabs.query({ active: true, currentWindow: true })
+            .then(tabs => {
+                const currentUrl = tabs[0].url;
+
+                const selectedTextToSend = info.selectionText ?? ""; // Use ?? to default to ""
+
+                // Send message to content script to open sidebar AND include selected text AND current URL
+                browser.tabs.sendMessage(tab.id, {
+                    action: "openSidebar",
+                    selectedText: selectedTextToSend,
+                    currentTabUrl: currentUrl // Send currentTabUrl to content script
+                });
+            })
+            .catch(error => {
+                console.error("Error getting current tab URL:", error);
+                // Optionally, send an error message to content script/sidebar if needed
+            });
     }
 });

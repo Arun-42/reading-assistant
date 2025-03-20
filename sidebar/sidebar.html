@@ -17,10 +17,20 @@
             <p id="api-key-status"></p>
         </div>
 
-        <button id="test-api-button">Test Gemini API</button> <!-- New Test Button -->
+        <div id="page-context-section" class="collapsible"> <!-- New Page Context Section -->
+            <button class="collapsible-button">Page Context (Click to Expand)</button>
+            <div class="collapsible-content">
+                <div id="page-text-display">
+                    <!-- Extracted page text will be displayed here -->
+                    <span class="loading-indicator">Extracting page text...</span> 
+                </div>
+            </div>
+        </div>
 
-        <div id="gemini-response-area"> <!-- New Response Area -->
-            <!-- Gemini API responses will be displayed here -->
+        <button id="test-api-button">Test Gemini API</button>
+
+        <div id="gemini-response-area">
+            <!-- Gemini API responses area (same as before) -->
         </div>
 
         <p>This is the sidebar.</p>

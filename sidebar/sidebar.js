@@ -1,14 +1,19 @@
-import { streamGenerateContent, handleStreamingResponse } from '../utils/gemini-api.js'; // Import API functions
+import { streamGenerateContent, handleStreamingResponse } from '../utils/gemini-api.js';
+import { extractPageContent } from '../utils/extraction.js'; // Import extractPageContent
+
 
 console.log("Sidebar script loaded!");
 
-// DOM Element Selectors (same as before, plus new ones)
+// DOM Element Selectors (add new ones for page context)
 const apiKeyInput = document.getElementById('api-key');
 const saveApiKeyButton = document.getElementById('save-api-key');
 const apiKeyStatus = document.getElementById('api-key-status');
 const selectedTextDisplay = document.getElementById('selected-text-display');
-const testApiButton = document.getElementById('test-api-button'); // New test API button
-const geminiResponseArea = document.getElementById('gemini-response-area'); // New response area
+const testApiButton = document.getElementById('test-api-button');
+const geminiResponseArea = document.getElementById('gemini-response-area');
+const pageTextDisplay = document.getElementById('page-text-display'); // Page text display area
+const pageContextSection = document.getElementById('page-context-section'); // Collapsible section
+const collapsibleButton = document.querySelector('.collapsible-button'); // Collapsible button
 
 // Function to save API key to storage
 function saveApiKey(key) {
@@ -62,6 +67,42 @@ saveApiKeyButton.addEventListener('click', () => {
     }
 });
 
+// Collapsible section functionality (NEW)
+collapsibleButton.addEventListener('click', function() {
+    this.classList.toggle('active'); // Toggle active class on button (for styling if needed)
+    const content = this.nextElementSibling; // Get the collapsible content element
+    content.classList.toggle('expanded'); // Toggle 'expanded' class on content for animation
+
+    if (content.classList.contains('expanded')) {
+        content.style.maxHeight = content.scrollHeight + "px"; // Expand: set max height to content's scrollHeight
+    } else {
+        content.style.maxHeight = null; // Collapse: set max height to null (CSS transition will handle animation)
+    }
+
+    // Load page text only when expanded for the first time (optimization)
+    if (content.classList.contains('expanded') && !pageTextDisplay.dataset.contentLoaded) {
+        pageTextDisplay.dataset.contentLoaded = 'true'; // Mark content as loading/loaded
+
+        browser.tabs.query({ active: true, currentWindow: true }) // Get current tab URL
+            .then(tabs => {
+                const currentUrl = tabs[0].url;
+                pageTextDisplay.textContent = "Extracting page text, please wait..."; // Set loading message
+
+                extractPageContent(currentUrl) // Call text extraction function
+                    .then(extractedText => {
+                        pageTextDisplay.textContent = extractedText; // Display extracted text
+                    })
+                    .catch(extractionError => {
+                        pageTextDisplay.textContent = "Error extracting page text."; // Error message
+                        console.error("Text extraction error:", extractionError);
+                    });
+            })
+            .catch(error => {
+                pageTextDisplay.textContent = "Error getting current page URL."; // Error getting URL
+                console.error("Error getting current tab:", error);
+            });
+    }
+});
 
 
 // In sidebar/sidebar.js (inside testApiButton.addEventListener('click', ...))
@@ -89,7 +130,12 @@ testApiButton.addEventListener('click', () => {
         }
 
 
-        const userMessage = { role: "user", parts: [{ text: "Hello Gemini, write a 200 word story in changes in human body at age 0.2" }] };
+        // Get page text from pageTextDisplay (use extracted text as context)
+        const pageContextText = pageTextDisplay.textContent; // Get text from pageTextDisplay
+        const userQuery = "Summarize the main points of the following page. "; // Example query with instruction
+        const contextPrompt = `Page Context:\n${pageContextText}\n\nUser Query: ${userQuery}`; // Combine context and query
+
+        const userMessage = { role: "user", parts: [{ text: contextPrompt }] }; // Use combined context+query
         const messages = [userMessage];
 
         streamGenerateContent(apiKey, messages)
@@ -131,13 +177,35 @@ testApiButton.addEventListener('click', () => {
 
 // Message listener from content script (for selected text) - No changes from Step 4
 window.addEventListener('message', function(event) {
-    if (event.data && event.data.action === "setSelectedText") {
-        const selectedText = event.data.text;
-        console.log("Sidebar received selected text:", selectedText);
+    if (event.data) {
+        if (event.data.action === "setInitialContext") {
+            const selectedText = event.data.selectedText;
+            const tabUrl = event.data.tabUrl; // Get tabUrl from message
+            console.log("Sidebar received initial context. Selected text:", selectedText, "Tab URL:", tabUrl);
 
-        if (selectedTextDisplay) {
-            const formattedText = selectedText.split('\n').map(line => `> ${line}`).join('\n');
-            selectedTextDisplay.textContent = formattedText;
-        }
-    }
+            if (selectedTextDisplay) {
+                const formattedText = selectedText.split('\n').map(line => `> ${line}`).join('\n');
+                selectedTextDisplay.textContent = formattedText;
+            }
+
+            // Trigger text extraction here, using the received tabUrl
+            if (tabUrl) {
+                // Find the page-text-display element (assuming it exists in your sidebar.html)
+                if (pageTextDisplay && pageContextSection.classList.contains('collapsible')) {
+                    pageTextDisplay.dataset.contentLoaded = 'true'; // Mark as loading/loaded (even though loading starts now)
+                    pageTextDisplay.textContent = "Extracting page text, please wait..."; // Set loading message
+
+                    extractPageContent(tabUrl) // Use received tabUrl for extraction
+                        .then(extractedText => {
+                            pageTextDisplay.textContent = extractedText; // Display extracted text
+                        })
+                        .catch(extractionError => {
+                            pageTextDisplay.textContent = "Error extracting page text."; // Error message
+                            console.error("Text extraction error:", extractionError);
+                        });
+                }
+            }
+
+        } 
+       }
 });

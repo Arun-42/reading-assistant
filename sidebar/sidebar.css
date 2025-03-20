@@ -112,3 +112,53 @@ h1 {
     color: darkred; /* Make error messages more visually distinct */
     font-weight: bold;
 }
+
+/* Collapsible section styles */
+.collapsible {
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    overflow: hidden; /* Ensure content is clipped within rounded borders */
+}
+
+.collapsible-button {
+    background-color: #f0f0f0; /* Light background for button */
+    color: #333;
+    cursor: pointer;
+    padding: 10px;
+    width: 100%;
+    border: none;
+    text-align: left;
+    outline: none;
+    font-size: 1em;
+    display: block; /* Make button take full width */
+}
+
+.collapsible-button:hover {
+    background-color: #e0e0e0; /* Slightly darker on hover */
+}
+
+.collapsible-content {
+    padding: 0 15px; /* Left/right padding for content */
+    max-height: 0; /* Initially hidden */
+    overflow: hidden;
+    transition: max-height 0.3s ease-out; /* Smooth collapse/expand animation */
+    background-color: #fff; /* White background for content area */
+    font-size: 0.9em;
+    white-space: pre-wrap; /* Preserve formatting in extracted text */
+    border-top: 1px solid #ccc; /* Separator line between button and content */
+}
+
+.collapsible-content.expanded {
+    max-height: 500px; /* Example max height when expanded (adjust as needed) */
+    padding-top: 15px; /* Add top padding when expanded */
+    padding-bottom: 15px; /* Add bottom padding when expanded */
+}
+
+#page-text-display {
+    overflow-y: auto; /* Enable vertical scroll if page text is long */
+    max-height: 400px; /* Limit max height of page text display */
+    font-family: monospace; /* Monospace font for page text (optional) */
+    font-size: 0.85em; /* Slightly smaller font for page text */
+    line-height: 1.4;
+}
