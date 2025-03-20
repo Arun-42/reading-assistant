@@ -4,6 +4,8 @@ import { extractPageContent } from '../utils/extraction.js'; // Import extractPa
 
 console.log("Sidebar script loaded!");
 
+let conversationHistory = []; // <--- Initialize conversation history array
+
 // DOM Element Selectors (add new ones for page context)
 const apiKeyInput = document.getElementById('api-key');
 const saveApiKeyButton = document.getElementById('save-api-key');
@@ -110,8 +112,25 @@ collapsibleButton.addEventListener('click', function() {
 // In sidebar/sidebar.js (inside testApiButton.addEventListener('click', ...))
 
 askGeminiButton.addEventListener('click', () => {
-    geminiResponseArea.textContent = ""; // Clear previous content
-    geminiResponseArea.innerHTML = '<span class="loading-indicator">Loading response...</span>'; // Set loading indicator using innerHTML for span
+    const userQuestion = userQuestionInput.value.trim();
+    if (!userQuestion) {
+        geminiResponseArea.textContent = "Please enter your question.";
+        geminiResponseArea.classList.remove('loading-response');
+        geminiResponseArea.classList.add('error-response');
+        return;
+    }
+
+    // Display user message in chat history
+    const userMessageDiv = document.createElement('div');
+    userMessageDiv.className = 'user-message';
+    userMessageDiv.textContent = userQuestion;
+    geminiResponseArea.appendChild(userMessageDiv); // Append user message
+
+    const aiResponseDiv = document.createElement('div'); // Container for AI response
+    aiResponseDiv.className = 'ai-response';
+    aiResponseDiv.innerHTML = '<span class="loading-indicator">Loading response...</span>'; // Loading indicator inside AI response
+    geminiResponseArea.appendChild(aiResponseDiv); // Append AI response container
+
     geminiResponseArea.classList.remove('error-response');
     geminiResponseArea.classList.add('loading-response');
 
@@ -119,69 +138,64 @@ askGeminiButton.addEventListener('click', () => {
     getApiKey().then(result => {
         const apiKey = result.geminiApiKey;
         if (!apiKey) {
-            geminiResponseArea.innerHTML = '<span class="error-message">API key not set. Please enter and save your API key.</span>'; // Use innerHTML for error span
+            aiResponseDiv.innerHTML = '<span class="error-message">API key not set. Please enter and save your API key.</span>';
             geminiResponseArea.classList.remove('loading-response');
             geminiResponseArea.classList.add('error-response');
             return;
         }
         if (!isValidApiKeyFormat(apiKey)) {
-            geminiResponseArea.innerHTML = '<span class="error-message">Invalid API key format. Please check and save again.</span>'; // Use innerHTML for error span
+            aiResponseDiv.innerHTML = '<span class="error-message">Invalid API key format. Please check and save again.</span>';
             geminiResponseArea.classList.remove('loading-response');
             geminiResponseArea.classList.add('error-response');
             return;
         }
 
 
-        // Get page context, selected text, and user question
         const pageContextText = pageTextDisplay.textContent;
-        const selectedText = selectedTextDisplay.textContent; // Get selected text from display
-        const userQuestion = userQuestionInput.value.trim(); // Get user's question from input
-
-        if (!userQuestion) { // Check if user question is empty
-            geminiResponseArea.textContent = "Please enter your question.";
-            geminiResponseArea.classList.remove('loading-response');
-            geminiResponseArea.classList.add('error-response');
-            return; // Stop if no question is entered
-        }
-
-        // Construct the prompt to send to Gemini API - now includes selected text and user question
+        const selectedText = selectedTextDisplay.textContent;
         const contextPrompt = `Page Context:\n${pageContextText}\n\nSelected Text:\n${selectedText}\n\nUser Question: ${userQuestion}`;
 
-        const userMessage = { role: "user", parts: [{ text: contextPrompt }] };
-        const messages = [userMessage];
 
+        // Create user message object for conversation history
+        const userContent = { role: "user", parts: [{ text: contextPrompt }] }; // Use contextPrompt
+        conversationHistory.push(userContent); // Add user message to history
 
+        const messagesForApi = [...conversationHistory]; // Create a copy of history for API request
 
-        streamGenerateContent(apiKey, messages)
+        streamGenerateContent(apiKey, messagesForApi) // Send conversation history in API request
             .then(response => {
-                geminiResponseArea.innerHTML = ""; // Clear loading indicator, prepare for streaming
+                aiResponseDiv.innerHTML = ""; // Clear loading indicator in AI response container
+
+                let aiResponseContent = { role: "model", parts: [] }; // Initialize AI response content
+                conversationHistory.push(aiResponseContent); // Add empty AI response to history
 
                 handleStreamingResponse(response,
-                    (data) => { // messageCallback
+                    (data) => { // messageCallback - modified to append to conversation history
                         if (data.candidates && data.candidates[0].content && data.candidates[0].content.parts) {
                             const textPart = data.candidates[0].content.parts[0].text;
                             if (textPart) {
-                                geminiResponseArea.textContent += textPart; // Append span to response area
-                                geminiResponseArea.scrollTop = geminiResponseArea.scrollHeight; // Auto-scroll to bottom
+                                aiResponseDiv.textContent += textPart; // Append to AI response container
+                                conversationHistory[conversationHistory.length - 1].parts.push({ text: textPart }); // Append chunk to history
+                                geminiResponseArea.scrollTop = geminiResponseArea.scrollHeight;
                             }
                         }
                     },
-                    (errorMessage) => { // errorCallback
-                        geminiResponseArea.innerHTML = `<span class="error-message">Error: ${errorMessage}</span>`; // Use innerHTML for error span
+                    (errorMessage) => { // errorCallback - no change
+                        aiResponseDiv.innerHTML = `<span class="error-message">Error: ${errorMessage}</span>`;
                         geminiResponseArea.classList.remove('loading-response');
                         geminiResponseArea.classList.add('error-response');
                     }
                 );
             })
-            .catch(apiError => { // catch API errors
-                geminiResponseArea.innerHTML = `<span class="error-message">API Error: ${apiError.message}</span>`; // Use innerHTML for error span
+            .catch(apiError => { // catch API errors - no change
+                aiResponseDiv.innerHTML = `<span class="error-message">API Error: ${apiError.message}</span>`;
                 geminiResponseArea.classList.remove('loading-response');
                 geminiResponseArea.classList.add('error-response');
             });
 
 
-    }).catch(storageError => { // catch storage errors
-        geminiResponseArea.innerHTML = '<span class="error-message">Error accessing API key storage.</span>'; // Use innerHTML for error span
+    }).catch(storageError => { // catch storage errors - no change
+        aiResponseDiv.innerHTML = `<span class="error-message">Error accessing API key storage.</span>`;
         geminiResponseArea.classList.remove('loading-response');
         geminiResponseArea.classList.add('error-response');
         console.error("Error getting API key from storage:", storageError);

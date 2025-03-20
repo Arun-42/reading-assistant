@@ -183,3 +183,39 @@ h1 {
     resize: vertical; /* Allow vertical resizing of textarea */
     min-height: 80px; /* Minimum height for textarea */
 }
+
+.gemini-response-area {
+    /* ... (existing styles - no changes) ... */
+    display: flex; /* Enable flexbox for chat layout */
+    flex-direction: column; /* Stack messages vertically */
+}
+
+.user-message {
+    background-color: #e6f7ff; /* Light blue for user messages */
+    padding: 8px 12px;
+    border-radius: 10px;
+    margin-bottom: 8px;
+    align-self: flex-end; /* Align user messages to the right */
+    word-wrap: break-word; /* Wrap long words */
+    white-space: pre-line; /* Preserve newlines */
+}
+
+.ai-response {
+    background-color: #f0f0f0; /* Light gray for AI responses */
+    padding: 8px 12px;
+    border-radius: 10px;
+    margin-bottom: 8px;
+    align-self: flex-start; /* Align AI responses to the left */
+    word-wrap: break-word;
+    white-space: pre-line;
+}
+
+.loading-indicator {
+    /* ... (existing loading-indicator styles - no changes) ... */
+    align-self: flex-start; /* Align loading indicator to the left */
+}
+
+.error-message {
+    /* ... (existing error-message styles - no changes) ... */
+    align-self: flex-start; /* Align error messages to the left */
+}
