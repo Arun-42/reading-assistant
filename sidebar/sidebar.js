@@ -14,6 +14,8 @@ const geminiResponseArea = document.getElementById('gemini-response-area');
 const pageTextDisplay = document.getElementById('page-text-display'); // Page text display area
 const pageContextSection = document.getElementById('page-context-section'); // Collapsible section
 const collapsibleButton = document.querySelector('.collapsible-button'); // Collapsible button
+const askGeminiButton = document.getElementById('ask-gemini-button'); // Renamed button ID
+const userQuestionInput = document.getElementById('user-question'); // New question input
 
 // Function to save API key to storage
 function saveApiKey(key) {
@@ -107,7 +109,7 @@ collapsibleButton.addEventListener('click', function() {
 
 // In sidebar/sidebar.js (inside testApiButton.addEventListener('click', ...))
 
-testApiButton.addEventListener('click', () => {
+askGeminiButton.addEventListener('click', () => {
     geminiResponseArea.textContent = ""; // Clear previous content
     geminiResponseArea.innerHTML = '<span class="loading-indicator">Loading response...</span>'; // Set loading indicator using innerHTML for span
     geminiResponseArea.classList.remove('error-response');
@@ -130,13 +132,25 @@ testApiButton.addEventListener('click', () => {
         }
 
 
-        // Get page text from pageTextDisplay (use extracted text as context)
-        const pageContextText = pageTextDisplay.textContent; // Get text from pageTextDisplay
-        const userQuery = "Summarize the main points of the following page. "; // Example query with instruction
-        const contextPrompt = `Page Context:\n${pageContextText}\n\nUser Query: ${userQuery}`; // Combine context and query
+        // Get page context, selected text, and user question
+        const pageContextText = pageTextDisplay.textContent;
+        const selectedText = selectedTextDisplay.textContent; // Get selected text from display
+        const userQuestion = userQuestionInput.value.trim(); // Get user's question from input
 
-        const userMessage = { role: "user", parts: [{ text: contextPrompt }] }; // Use combined context+query
+        if (!userQuestion) { // Check if user question is empty
+            geminiResponseArea.textContent = "Please enter your question.";
+            geminiResponseArea.classList.remove('loading-response');
+            geminiResponseArea.classList.add('error-response');
+            return; // Stop if no question is entered
+        }
+
+        // Construct the prompt to send to Gemini API - now includes selected text and user question
+        const contextPrompt = `Page Context:\n${pageContextText}\n\nSelected Text:\n${selectedText}\n\nUser Question: ${userQuestion}`;
+
+        const userMessage = { role: "user", parts: [{ text: contextPrompt }] };
         const messages = [userMessage];
+
+
 
         streamGenerateContent(apiKey, messages)
             .then(response => {

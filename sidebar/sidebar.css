@@ -162,3 +162,24 @@ h1 {
     font-size: 0.85em; /* Slightly smaller font for page text */
     line-height: 1.4;
 }
+
+#question-input-area {
+    margin-bottom: 15px;
+}
+
+#question-input-area label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+#question-input-area textarea {
+    width: calc(100% - 10px); /* Adjust width for padding/border */
+    padding: 8px;
+    margin-bottom: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    resize: vertical; /* Allow vertical resizing of textarea */
+    min-height: 80px; /* Minimum height for textarea */
+}
