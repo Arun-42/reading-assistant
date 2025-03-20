@@ -1,221 +1,271 @@
+/* Base styles and resets */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
 body {
-    font-family: sans-serif;
-    width: 300px; /* Set a fixed width for the sidebar */
-    height: 100vh; /* Make it take up the full viewport height */
-    position: fixed; /* Fixed position so it stays in place */
-    top: 0;
-    right: 0;
-    background-color: #f0f0f0; /* Light gray background */
-    border-left: 1px solid #ccc; /* Separator line on the left */
-    box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1); /* Subtle shadow */
-    z-index: 1000; /* Ensure it's on top of page content */
-    padding: 20px;
-    box-sizing: border-box; /* Include padding in width/height */
-    overflow-y: auto; /* Enable vertical scrolling if content overflows */
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  width: 300px; /* Starting width */
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  right: 0;
+  background-color: #ffffff;
+  border-left: 1px solid #e0e0e0;
+  box-shadow: -5px 0 25px rgba(0, 0, 0, 0.05);
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden; /* Hide body scrollbar */
+  resize: horizontal; /* Make sidebar resizable */
+  min-width: 250px; /* Minimum width */
+  max-width: 500px; /* Maximum width */
+}
+
+/* Add a drag handle on the left side */
+body::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 5px;
+  height: 100%;
+  background-color: #f0f0f0;
+  cursor: ew-resize;
+  z-index: 1001;
+}
+
+body::before:hover {
+  background-color: #7c88ff;
 }
 
 #sidebar-content {
-    /* Styles for the content within the sidebar if needed */
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 12px;
+  overflow-y: auto; /* Single scrollbar for entire content */
+  scrollbar-width: thin; /* For Firefox */
+  scrollbar-color: #d1d5db #f1f1f1; /* For Firefox */
 }
 
+/* Hide scrollbar for Chrome, Safari and Opera */
+#sidebar-content::-webkit-scrollbar {
+  width: 5px;
+}
+
+#sidebar-content::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+}
+
+#sidebar-content::-webkit-scrollbar-thumb {
+  background: #d1d5db;
+  border-radius: 10px;
+}
+
+#sidebar-content::-webkit-scrollbar-thumb:hover {
+  background: #a1a1aa;
+}
+
+/* Header */
 h1 {
-    margin-top: 0;
-    font-size: 1.2em;
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 12px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #f0f0f0;
 }
 
-/* Add these styles to sidebar.css */
-
+/* API Key section */
 #api-key-input-area {
-    margin-bottom: 15px;
+  margin-bottom: 15px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #f0f0f0;
 }
 
 #api-key-input-area label {
-    display: block;
-    margin-bottom: 5px;
-    font-weight: bold;
+  display: block;
+  margin-bottom: 6px;
+  font-size: 13px;
+  color: #555;
+  font-weight: 500;
 }
 
-#api-key-input-area input[type="text"] {
-    width: calc(100% - 10px); /* Adjust width for padding/border */
-    padding: 8px;
-    margin-bottom: 8px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    box-sizing: border-box; /* Include padding and border in element's total width and height */
+#api-key {
+  width: 100%;
+  padding: 8px 10px;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  font-size: 13px;
+  color: #333;
+  background-color: #f9f9f9;
+  transition: all 0.2s ease;
 }
 
-#api-key-input-area button {
-    padding: 8px 15px;
-    background-color: #007bff; /* Example button color */
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
+#api-key:focus {
+  outline: none;
+  border-color: #7c88ff;
+  background-color: #fff;
+  box-shadow: 0 0 0 2px rgba(124, 136, 255, 0.15);
 }
 
-#api-key-input-area button:hover {
-    background-color: #0056b3; /* Darker shade on hover */
+#save-api-key {
+  margin-top: 8px;
+  padding: 6px 12px;
+  background-color: #7c88ff;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+#save-api-key:hover {
+  background-color: #5a67e0;
 }
 
 #api-key-status {
-    font-size: 0.9em;
-    margin-top: 5px;
-    color: green; /* Default status color */
+  margin-top: 6px;
+  font-size: 12px;
+  color: #10b981;
 }
 
 #api-key-status.error {
-    color: red; /* Error status color */
+  color: #ef4444;
 }
 
-
-#test-api-button {
-    padding: 8px 15px;
-    background-color: #28a745; /* Example test button color (green) */
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    margin-bottom: 15px; /* Add margin below the button */
-}
-
-#test-api-button:hover {
-    background-color: #1e7e34; /* Darker shade on hover */
-}
-
-
+/* Main chat area */
 #gemini-response-area {
-    border: 1px solid #ccc;
-    padding: 10px;
-    margin-bottom: 15px;
-    border-radius: 4px;
-    background-color: white; /* White background for response area */
-    font-family: monospace; /* Monospace font for code-like output (optional) */
-    white-space: pre-wrap; /* Preserve whitespace and wrap text */
-    overflow-y: auto; /* Enable vertical scroll if response is long */
-    max-height: 200px; /* Limit max height for scrollable area */
-}
-/* Add these styles to sidebar.css */
-
-/* ... (previous styles for test-api-button, gemini-response-area, etc.) ... */
-
-#gemini-response-area.loading-response {
-    opacity: 0.7; /* Slightly dim the response area when loading */
-    font-style: italic; /* Indicate loading with italic text */
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  background-color: #ffffff;
+  border-radius: 8px;
+  overflow: visible; /* Remove internal scrollbar */
 }
 
-#gemini-response-area .response-chunk {
-    display: inline-block; /* Display chunks inline */
-    /* You can add more styling to individual chunks if needed, e.g., background, etc. */
+#page-and-selection {
+  display: none; /* Hidden as per requirements */
 }
 
-#gemini-response-area.error-response {
-    color: darkred; /* Make error messages more visually distinct */
-    font-weight: bold;
+#chat-history {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  /* Remove overflow-y to eliminate internal scrollbar */
+  padding: 6px 2px;
 }
 
-/* Collapsible section styles */
-.collapsible {
-    margin-bottom: 15px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    overflow: hidden; /* Ensure content is clipped within rounded borders */
-}
-
-.collapsible-button {
-    background-color: #f0f0f0; /* Light background for button */
-    color: #333;
-    cursor: pointer;
-    padding: 10px;
-    width: 100%;
-    border: none;
-    text-align: left;
-    outline: none;
-    font-size: 1em;
-    display: block; /* Make button take full width */
-}
-
-.collapsible-button:hover {
-    background-color: #e0e0e0; /* Slightly darker on hover */
-}
-
-.collapsible-content {
-    padding: 0 15px; /* Left/right padding for content */
-    max-height: 0; /* Initially hidden */
-    overflow: hidden;
-    transition: max-height 0.3s ease-out; /* Smooth collapse/expand animation */
-    background-color: #fff; /* White background for content area */
-    font-size: 0.9em;
-    white-space: pre-wrap; /* Preserve formatting in extracted text */
-    border-top: 1px solid #ccc; /* Separator line between button and content */
-}
-
-.collapsible-content.expanded {
-    max-height: 500px; /* Example max height when expanded (adjust as needed) */
-    padding-top: 15px; /* Add top padding when expanded */
-    padding-bottom: 15px; /* Add bottom padding when expanded */
-}
-
-#page-text-display {
-    overflow-y: auto; /* Enable vertical scroll if page text is long */
-    max-height: 400px; /* Limit max height of page text display */
-    font-family: monospace; /* Monospace font for page text (optional) */
-    font-size: 0.85em; /* Slightly smaller font for page text */
-    line-height: 1.4;
-}
-
-#question-input-area {
-    margin-bottom: 15px;
-}
-
-#question-input-area label {
-    display: block;
-    margin-bottom: 5px;
-    font-weight: bold;
-}
-
-#question-input-area textarea {
-    width: calc(100% - 10px); /* Adjust width for padding/border */
-    padding: 8px;
-    margin-bottom: 8px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    box-sizing: border-box;
-    resize: vertical; /* Allow vertical resizing of textarea */
-    min-height: 80px; /* Minimum height for textarea */
-}
-
-.gemini-response-area {
-    /* ... (existing styles - no changes) ... */
-    display: flex; /* Enable flexbox for chat layout */
-    flex-direction: column; /* Stack messages vertically */
+/* Chat message styling */
+.user-message, .ai-response {
+  padding: 10px 12px;
+  border-radius: 8px;
+  font-size: 13px;
+  line-height: 1.5;
+  max-width: 95%; /* Slightly larger max-width */
+  position: relative;
+  overflow-wrap: break-word; /* Prevent text overflow */
+  word-break: break-word;
 }
 
 .user-message {
-    background-color: #e6f7ff; /* Light blue for user messages */
-    padding: 8px 12px;
-    border-radius: 10px;
-    margin-bottom: 8px;
-    align-self: flex-end; /* Align user messages to the right */
-    word-wrap: break-word; /* Wrap long words */
-    white-space: pre-line; /* Preserve newlines */
+  align-self: flex-end;
+  background-color: #7c88ff;
+  color: white;
+  border-bottom-right-radius: 2px;
 }
 
 .ai-response {
-    background-color: #f0f0f0; /* Light gray for AI responses */
-    padding: 8px 12px;
-    border-radius: 10px;
-    margin-bottom: 8px;
-    align-self: flex-start; /* Align AI responses to the left */
-    word-wrap: break-word;
-    white-space: pre-line;
+  align-self: flex-start;
+  background-color: #f0f2ff;
+  color: #333;
+  border-bottom-left-radius: 2px;
 }
 
+/* Question input area */
+#question-input-area {
+  margin-top: 12px;
+  border-top: 1px solid #f0f0f0;
+  padding-top: 12px;
+}
+
+#question-input-area label {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 13px;
+  color: #555;
+  font-weight: 500;
+}
+
+#user-question {
+  width: 100%;
+  min-height: 70px;
+  padding: 10px;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  resize: none;
+  font-family: inherit;
+  font-size: 13px;
+  line-height: 1.5;
+  color: #333;
+  transition: all 0.2s ease;
+}
+
+#user-question:focus {
+  outline: none;
+  border-color: #7c88ff;
+  box-shadow: 0 0 0 2px rgba(124, 136, 255, 0.15);
+}
+
+/* Loading indicator */
 .loading-indicator {
-    /* ... (existing loading-indicator styles - no changes) ... */
-    align-self: flex-start; /* Align loading indicator to the left */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 6px;
+  color: #555;
+  font-style: italic;
+  font-size: 13px;
 }
 
+.loading-indicator::after {
+  content: "...";
+  animation: loading 1.5s infinite;
+}
+
+@keyframes loading {
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 1; }
+}
+
+/* Error message */
 .error-message {
-    /* ... (existing error-message styles - no changes) ... */
-    align-self: flex-start; /* Align error messages to the left */
+  color: #ef4444;
+  padding: 10px;
+  background-color: #fef2f2;
+  border-radius: 6px;
+  font-size: 12px;
+  margin: 6px 0;
+}
+
+/* Add styling for chat message timestamps or other metadata */
+.message-timestamp {
+  font-size: 10px;
+  opacity: 0.7;
+  margin-top: 4px;
+}
+
+/* Your Question label at bottom */
+.your-question-label {
+  font-size: 13px;
+  font-weight: 500;
+  color: #555;
+  margin-bottom: 6px;
 }

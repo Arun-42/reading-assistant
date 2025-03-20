@@ -17,32 +17,38 @@
             <p id="api-key-status"></p>
         </div>
 
-        <div id="page-context-section" class="collapsible">
-            <!-- Page context section (same as before) -->
-            <button class="collapsible-button">Page Context (Click to Expand)</button>
-            <div class="collapsible-content">
-                <div id="page-text-display">
-                    <span class="loading-indicator">Extracting page text...</span>
+        <div id="gemini-response-area">
+
+            <div id="page-and-selection">
+                <!-- new area for putting page context-->
+                <div class="chat-text page-context">Page Context: <span id='page-context-area'>loading...</span>
+                </div>
+                <div class="chat-text selected-text">Selected Text: <span id='selected-text-area'></span>
                 </div>
             </div>
+
+            <div id="chat-history">
+                <!-- chat history will go here via JS-->
+            </div>
+
+
+            <div id="question-input-area">
+                <!-- Question Input Area - Moved INSIDE gemini-response-area -->
+                <label for="user-question">Your Question:</label>
+                <textarea id="user-question"
+                    placeholder="Ask your question about the selected text or page"></textarea>
+            </div>
+            <!-- Gemini API responses will be displayed here (chat history will build up here) -->
         </div>
 
-        <div id="selected-text-display">
-            <!-- Selected text display area (same as before) -->
-        </div>
+        <!-- REMOVE page-context-section -->
+        <!-- <div id="page-context-section" class="collapsible"> ... </div> -->
 
-        <div id="question-input-area"> <!-- New Question Input Area -->
-            <label for="user-question">Your Question:</label>
-            <textarea id="user-question" placeholder="Ask your question about the selected text or page"></textarea>
-        </div>
+        <!-- REMOVE selected-text-display -->
+        <!-- <div id="selected-text-display"> ... </div> -->
 
-        <button id="ask-gemini-button">Ask Gemini</button> <!-- Renamed Button -->
-
-        <div id="gemini-response-area">
-            <!-- Gemini API responses area (same as before) -->
-        </div>
-
-        <p>This is the sidebar.</p>
+        <!-- REMOVE "This is the sidebar." paragraph -->
+        <!-- <p>This is the sidebar.</p> -->
     </div>
     <script src="sidebar.js" type="module"></script>
 </body>

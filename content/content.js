@@ -29,6 +29,11 @@ function injectSidebar(selectedText, currentTabUrl) { // Modified to accept sele
             selectedText: selectedText,          // The selected text itself
             tabUrl: currentTabUrl 
         }, "*"); // '*' is for origin, for simplicity in extensions, but be mindful in web apps
+
+        sidebarIframe.contentWindow.postMessage({  // <-- NEW MESSAGE
+            action: "setInputText",              // <-- NEW ACTION
+            text: selectedText                  // <-- Send selectedText again, specifically for input
+        }, "*");
     };
 }
 
