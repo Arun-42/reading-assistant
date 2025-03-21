@@ -18,7 +18,7 @@ const chatHistory = document.getElementById('chat-history');
 
 // Configure marked.js to use highlight.js
 marked.setOptions({
-    highlight: function(code, lang) {
+    highlight: function (code, lang) {
         return hljs.highlight(code, { language: lang, ignoreIllegals: true }).value;
     },
     langPrefix: 'hljs language-' // Prefix for code block classes
@@ -56,68 +56,68 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
-document.addEventListener('DOMContentLoaded', function() {
-  // Create a resize handle element
-//   const resizeHandle = document.createElement('div');
-//   resizeHandle.id = 'resize-handle';
-//   resizeHandle.style.cssText = `
-//     position: absolute;
-//     left: 0;
-//     top: 0;
-//     width: 6px;
-//     height: 100%;
-//     cursor: ew-resize;
-//     background: transparent;
-//     z-index: 1001;
-//   `;
-  
-//   document.body.appendChild(resizeHandle);
-  
-//   let isResizing = false;
-//   let initialWidth, initialMouseX;
-  
-//   resizeHandle.addEventListener('mousedown', function(e) {
-//     isResizing = true;
-//     initialWidth = document.body.offsetWidth;
-//     initialMouseX = e.clientX;
-//     document.body.style.transition = 'none';
-    
-//     // Add overlay to prevent text selection during resize
-//     const overlay = document.createElement('div');
-//     overlay.id = 'resize-overlay';
-//     overlay.style.cssText = `
-//       position: fixed;
-//       top: 0;
-//       left: 0;
-//       right: 0;
-//       bottom: 0;
-//       z-index: 10000;
-//       cursor: ew-resize;
-//     `;
-//     document.body.appendChild(overlay);
-    
-//     e.preventDefault();
-//   });
-  
-//   document.addEventListener('mousemove', function(e) {
-//     if (!isResizing) return;
-    
-//     const newWidth = initialWidth - (e.clientX - initialMouseX);
-//     if (newWidth >= 250 && newWidth <= 500) {
-//       document.body.style.width = newWidth + 'px';
-//     }
-//   });
-  
-//   document.addEventListener('mouseup', function() {
-//     if (isResizing) {
-//       isResizing = false;
-//       document.body.style.transition = '';
-      
-//       // Remove overlay
-//       const overlay = document.getElementById('resize-overlay');
-//       if (overlay) overlay.remove();
-//     }
-//   });
+document.addEventListener('DOMContentLoaded', function () {
+    // Create a resize handle element
+    //   const resizeHandle = document.createElement('div');
+    //   resizeHandle.id = 'resize-handle';
+    //   resizeHandle.style.cssText = `
+    //     position: absolute;
+    //     left: 0;
+    //     top: 0;
+    //     width: 6px;
+    //     height: 100%;
+    //     cursor: ew-resize;
+    //     background: transparent;
+    //     z-index: 1001;
+    //   `;
+
+    //   document.body.appendChild(resizeHandle);
+
+    //   let isResizing = false;
+    //   let initialWidth, initialMouseX;
+
+    //   resizeHandle.addEventListener('mousedown', function(e) {
+    //     isResizing = true;
+    //     initialWidth = document.body.offsetWidth;
+    //     initialMouseX = e.clientX;
+    //     document.body.style.transition = 'none';
+
+    //     // Add overlay to prevent text selection during resize
+    //     const overlay = document.createElement('div');
+    //     overlay.id = 'resize-overlay';
+    //     overlay.style.cssText = `
+    //       position: fixed;
+    //       top: 0;
+    //       left: 0;
+    //       right: 0;
+    //       bottom: 0;
+    //       z-index: 10000;
+    //       cursor: ew-resize;
+    //     `;
+    //     document.body.appendChild(overlay);
+
+    //     e.preventDefault();
+    //   });
+
+    //   document.addEventListener('mousemove', function(e) {
+    //     if (!isResizing) return;
+
+    //     const newWidth = initialWidth - (e.clientX - initialMouseX);
+    //     if (newWidth >= 250 && newWidth <= 500) {
+    //       document.body.style.width = newWidth + 'px';
+    //     }
+    //   });
+
+    //   document.addEventListener('mouseup', function() {
+    //     if (isResizing) {
+    //       isResizing = false;
+    //       document.body.style.transition = '';
+
+    //       // Remove overlay
+    //       const overlay = document.getElementById('resize-overlay');
+    //       if (overlay) overlay.remove();
+    //     }
+    //   });
 });
 
 
@@ -183,7 +183,7 @@ saveApiKeyButton.addEventListener('click', () => {
 // In sidebar/sidebar.js (inside testApiButton.addEventListener('click', ...))
 
 // userQuestionInput.addEventListener('keydown', ...) - CORRECT and COMPLETE function for Step 13
-userQuestionInput.addEventListener('keydown', function(event) {
+userQuestionInput.addEventListener('keydown', function (event) {
     if (event.key === 'Enter' && !event.shiftKey) { // Check for Enter key press without Shift
         event.preventDefault(); // Prevent default Enter behavior (newline in textarea)
         const userQuestion = userQuestionInput.value.trim();
@@ -204,7 +204,7 @@ userQuestionInput.addEventListener('keydown', function(event) {
 
         //         contextPrompt = `I am reading this:\n<content>\n${pageContextText}\n</content>\n\nIn this,\n> ${currentSelectedText}\n\n${userQuestion}`; // Context Prompt for FIRST turn
         //     } else {
-                contextPrompt = userQuestion; // For subsequent turns, just use the user question
+        contextPrompt = userQuestion; // For subsequent turns, just use the user question
         // }
         // console.log('after', contextPrompt);
 
@@ -215,7 +215,7 @@ userQuestionInput.addEventListener('keydown', function(event) {
         if (contextPrompt.includes('<content>')) {
             // Replace <content>...</content> with <details><content>...</content></details>
             const wrappedContent = contextPrompt.replace(
-                /(<content>.*?<\/content>)/gs, 
+                /(<content>.*?<\/content>)/gs,
                 '<details>$1</details>'
             );
             userMessageDiv.innerHTML = marked.parse(wrappedContent);
@@ -256,27 +256,21 @@ userQuestionInput.addEventListener('keydown', function(event) {
 
             const messagesForApi = [...conversationHistory];
 
+            let aiMessageMarkdown = "";
             streamGenerateContent(apiKey, messagesForApi)
                 .then(response => {
                     aiResponseDiv.innerHTML = ""; // Clear loading indicator in AI response container
-
-                    let aiResponseContent = { role: "model", parts: [] }; // Initialize AI response content
-                    conversationHistory.push(aiResponseContent); // Add empty AI response to history
-
-                    let aiMessageMarkdown = "";
-
                     handleStreamingResponse(response,
                         (data) => { // messageCallback - modified to append to conversation history
                             if (data.candidates && data.candidates[0].content && data.candidates[0].content.parts) {
                                 const textPart = data.candidates[0].content.parts[0].text;
                                 if (textPart) {
-                                                                        // Append the new chunk to the markdown accumulator
+                                    // Append the new chunk to the markdown accumulator
                                     aiMessageMarkdown += textPart;
                                     // Update the displayed message using marked to render markdown:
                                     aiResponseDiv.innerHTML = marked.parse(aiMessageMarkdown);
                                     // Save the chunk into conversation history if needed
-                        
-                                    conversationHistory[conversationHistory.length - 1].parts.push({ text: textPart }); // Append chunk to history
+
                                     geminiResponseArea.scrollTop = geminiResponseArea.scrollHeight;
                                 }
                             }
@@ -286,9 +280,11 @@ userQuestionInput.addEventListener('keydown', function(event) {
                             geminiResponseArea.classList.remove('loading-response');
                             geminiResponseArea.classList.add('error-response');
                         }
-                    );
-                })
-                .catch(apiError => { // catch API errors - no change
+                    ).then(() => {
+                        const aiResponseContent = { role: "model", parts: [{ text: aiMessageMarkdown }] }; // <--- Use accumulated Markdown
+                        conversationHistory.push(aiResponseContent);
+                    });
+                }).catch(apiError => { // catch API errors - no change
                     aiResponseDiv.innerHTML = `<span class="error-message">API Error: ${apiError.message}</span>`;
                     geminiResponseArea.classList.remove('loading-response');
                     geminiResponseArea.classList.add('error-response');
@@ -310,7 +306,7 @@ userQuestionInput.addEventListener('keydown', function(event) {
 // Message listener from content script (for selected text) - No changes from Step 4
 
 // window.addEventListener('message', ...) - CORRECT and COMPLETE function for Step 13 (with input population)
-window.addEventListener('message', function(event) {
+window.addEventListener('message', function (event) {
     if (event.data) {
         if (event.data.action === "setInitialContext") {
             const selectedText = event.data.selectedText;
@@ -330,13 +326,27 @@ window.addEventListener('message', function(event) {
             if (tabUrl) {
                 // --- TEXT EXTRACTION USING TURNDOWN.JS (inside iframe.onload) ---
                 const turndownService = new TurndownService(); // Initialize Turndown
+                function cleanHtmlContent(htmlContent) {
+                    // Create a container to hold the entire HTML content
+                    const container = document.createElement('div');
+                    container.innerHTML = htmlContent;
 
+                    // Remove unwanted elements
+                    const elementsToRemove = ['script', 'style', 'iframe', 'noscript'];
+
+                    elementsToRemove.forEach(selector => {
+                        container.querySelectorAll(selector).forEach(element => element.remove());
+                    });
+
+                    // Return the cleaned HTML content
+                    return container.innerHTML;
+                }
                 // Get the HTML content from the whole document body
-                const htmlContent = documentBody; // Or you can target a specific element if needed
+                const documentWithoutScripts = cleanHtmlContent(documentBody);
 
                 let extractedText = "";
                 try {
-                    extractedText = turndownService.turndown(htmlContent); // Convert HTML to Markdown
+                    extractedText = turndownService.turndown(documentWithoutScripts); // Convert HTML to Markdown
                     console.log("Text extraction with Turndown successful.");
                 } catch (extractionError) {
                     console.error("Turndown text extraction error:", extractionError);
@@ -345,26 +355,26 @@ window.addEventListener('message', function(event) {
 
                 // extractPageContent(tabUrl)
                 //     .then(extractedText => {
-                        localStorage.setItem('currentPageText', extractedText); // Store extracted page text in localStorage
-                        pageContextArea.innerText = extractedText; // Set extracted text in page context area
+                localStorage.setItem('currentPageText', extractedText); // Store extracted page text in localStorage
+                pageContextArea.innerText = extractedText; // Set extracted text in page context area
 
 
-                        // NEW: Populate input box with full context prompt AFTER extraction (and focus)
-                        const contextPromptForInput = `I am reading this:\n<content>\n${extractedText}\n</content>\n\nIn this,\n> ${selectedText}\n\n`;
-                        // const contextPromptForInput = ``;
-                        userQuestionInput.value = contextPromptForInput; // Populate input
+                // NEW: Populate input box with full context prompt AFTER extraction (and focus)
+                const contextPromptForInput = `I am reading this:\n<content>\n${extractedText}\n</content>\n\nIn this,\n> ${selectedText}\n\n`;
+                // const contextPromptForInput = ``;
+                userQuestionInput.value = contextPromptForInput; // Populate input
 
-                        userQuestionInput.focus(); // Set focus to input box
-                        userQuestionInput.selectionStart = userQuestionInput.selectionEnd = contextPromptForInput.length; // Set cursor to end
+                userQuestionInput.focus(); // Set focus to input box
+                userQuestionInput.selectionStart = userQuestionInput.selectionEnd = contextPromptForInput.length; // Set cursor to end
 
 
-                    // })
-                    // .catch(extractionError => {
-                    //     localStorage.setItem('currentPageText', "Error extracting page text."); // Store error message
-                    //     pageContextArea.innerText = "COULD NOT LOAD"; // Set error message in page context area
-                    //     geminiResponseArea.innerHTML = '<div class="ai-response"><span class="error-message">Error extracting page text.</span></div>'; // Show extraction error in chat area - OPTIONAL - you can remove this line if you don't want error in chat history
-                    //     console.error("Text extraction error:", extractionError);
-                    // });
+                // })
+                // .catch(extractionError => {
+                //     localStorage.setItem('currentPageText', "Error extracting page text."); // Store error message
+                //     pageContextArea.innerText = "COULD NOT LOAD"; // Set error message in page context area
+                //     geminiResponseArea.innerHTML = '<div class="ai-response"><span class="error-message">Error extracting page text.</span></div>'; // Show extraction error in chat area - OPTIONAL - you can remove this line if you don't want error in chat history
+                //     console.error("Text extraction error:", extractionError);
+                // });
             }
         }
     }
