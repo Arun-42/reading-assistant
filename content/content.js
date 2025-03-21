@@ -26,98 +26,73 @@ function injectSidebar(selectedText, currentTabUrl) { // Modified to accept sele
             box-shadow: -2px 0 5px rgba(0, 0, 0, 0.2); /* Slightly stronger shadow */
         `;
     document.body.appendChild(sidebarIframe);
+    document.documentElement.style.marginRight = `${sidebarWidth}px`;
     console.log('in injectsidebar selectedtext:', selectedText, '|| taburl:', currentTabUrl);
-    sidebarIframe.onload = () => { // Wait for iframe to load before sending message
-        // Send the selected text to the sidebar iframe after it's loaded
+    sidebarIframe.onload = () => {
+        // Send initial messages to the sidebar
         sidebarIframe.contentWindow.postMessage({
-            action: "setInitialContext", // Action for the sidebar to handle
-            selectedText: selectedText,          // The selected text itself
+            action: "setInitialContext",
+            selectedText: selectedText,
             tabUrl: currentTabUrl,
             docbody: document.body.outerHTML
-        }, "*"); // '*' is for origin, for simplicity in extensions, but be mindful in web apps
-
-        sidebarIframe.contentWindow.postMessage({  // <-- NEW MESSAGE
-            action: "setInputText",              // <-- NEW ACTION
-            text: selectedText                  // <-- Send selectedText again, specifically for input
+        }, "*");
+        sidebarIframe.contentWindow.postMessage({
+            action: "setInputText",
+            text: selectedText
         }, "*");
 
-        // --- RESIZE HANDLE LOGIC (inside iframe.onload for sidebar context) ---
-const handle = sidebarIframe.contentDocument.getElementById('resize-handle');
-let isResizing = false;
-let startX = 0;
-let initialWidth = 0;
+        // --- RESIZE HANDLE LOGIC ---
+        const handle = sidebarIframe.contentDocument.getElementById('resize-handle');
+        let isResizing = false;
+        let startX = 0;
+        let initialWidth = 0;
 
-// Function to start resizing
-function startResize(e) {
-    isResizing = true;
-    startX = e.clientX;
-    
-    // Get the current width of the sidebar from its computed style
-    initialWidth = parseInt(window.getComputedStyle(sidebarIframe).width, 10);
-    
-    document.body.style.userSelect = 'none';
-    document.body.style.cursor = 'ew-resize';
-}
+        function startResize(e) {
+            isResizing = true;
+            startX = e.clientX;
+            initialWidth = parseInt(window.getComputedStyle(sidebarIframe).width, 10);
+            document.body.style.userSelect = 'none';
+            document.body.style.cursor = 'ew-resize';
+        }
 
-// Function to do the resizing
-function doResize(e) {
-    if (!isResizing) return;
-    
-    const delta = e.clientX - startX;
-    const newWidth = initialWidth - delta;
-    
-    // Apply min/max constraints
-    sidebarWidth = Math.min(
-        Math.max(newWidth, 200),
-        window.innerWidth / 2
-    );
-    
-    sidebarIframe.style.width = `${sidebarWidth}px`;
-}
+        function doResize(e) {
+            if (!isResizing) return;
+            const delta = e.clientX - startX;
+            // Since the sidebar is anchored to the right, subtract delta
+            const newWidth = initialWidth - delta;
+            // Apply min and max constraints
+            sidebarWidth = Math.min(Math.max(newWidth, 200), window.innerWidth / 2);
+            sidebarIframe.style.width = `${sidebarWidth}px`;
+            // Update page content margin right so the website shrinks accordingly
+            document.documentElement.style.marginRight = `${sidebarWidth}px`;
+        }
 
-// Function to stop resizing
-function stopResize() {
-    if (!isResizing) return;
-    
-    isResizing = false;
-    document.body.style.userSelect = '';
-    document.body.style.cursor = '';
-}
+        function stopResize() {
+            if (!isResizing) return;
+            isResizing = false;
+            document.body.style.userSelect = '';
+            document.body.style.cursor = '';
+        }
 
-// Add event to iframe handle
-handle.addEventListener('mousedown', function(e) {
-    e.preventDefault(); // Prevent text selection
-    
-    // Get the correct clientX by accounting for iframe's position
-    const iframeRect = sidebarIframe.getBoundingClientRect();
-    const clientX = iframeRect.left + e.clientX;
-    
-    // Create a new event-like object with the correct clientX
-    const newEvent = {
-        clientX: clientX
-    };
-    
-    startResize(newEvent);
-});
+        handle.addEventListener('mousedown', function(e) {
+            e.preventDefault();
+            const iframeRect = sidebarIframe.getBoundingClientRect();
+            const clientX = iframeRect.left + e.clientX;
+            startResize({ clientX: clientX });
+        });
 
-// Add main document events
-document.addEventListener('mousemove', doResize);
-document.addEventListener('mouseup', stopResize);
-document.addEventListener('mouseleave', stopResize);
+        document.addEventListener('mousemove', doResize);
+        document.addEventListener('mouseup', stopResize);
+        document.addEventListener('mouseleave', stopResize);
 
-// Ensure we're capturing events from the iframe too
-sidebarIframe.contentDocument.addEventListener('mousemove', function(e) {
-    // Only process if we're already resizing (started from handle)
-    if (!isResizing) return;
-    
-    // Convert iframe coordinates to main document coordinates
-    const iframeRect = sidebarIframe.getBoundingClientRect();
-    const clientX = iframeRect.left + e.clientX;
-    
-    doResize({ clientX: clientX });
-});
-
-sidebarIframe.contentDocument.addEventListener('mouseup', stopResize);
+        // Ensure events inside the iframe are captured too:
+        sidebarIframe.contentDocument.addEventListener('mousemove', function(e) {
+            if (!isResizing) return;
+            const iframeRect = sidebarIframe.getBoundingClientRect();
+            const clientX = iframeRect.left + e.clientX;
+            doResize({ clientX: clientX });
+        });
+        sidebarIframe.contentDocument.addEventListener('mouseup', stopResize);
         // --- END RESIZE HANDLE LOGIC ---
     };
 }
