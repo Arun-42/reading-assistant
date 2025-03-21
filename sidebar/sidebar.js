@@ -188,9 +188,9 @@ userQuestionInput.addEventListener('keydown', function (event) {
         event.preventDefault(); // Prevent default Enter behavior (newline in textarea)
         const userQuestion = userQuestionInput.value.trim();
         if (!userQuestion) {
-            geminiResponseArea.textContent = "Please enter your question.";
-            geminiResponseArea.classList.remove('error-response');
-            geminiResponseArea.classList.add('error-response');
+            // geminiResponseArea.textContent = "Please enter your question.";
+            // geminiResponseArea.classList.remove('error-response');
+            // geminiResponseArea.classList.add('error-response');
             return;
         }
 
