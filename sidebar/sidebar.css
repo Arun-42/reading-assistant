@@ -6,142 +6,143 @@
 }
 
 body {
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-  /* width: 300px; Starting width */
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
   width: 100%;
-  margin: 0;
   height: 100vh;
   position: fixed;
   top: 0;
   left: 0;
-  background-color: #ffffff;
-  border-left: 1px solid #e0e0e0;
-  box-shadow: -5px 0 25px rgba(0, 0, 0, 0.05);
+  background-color: #f0f4f8;
+  border-left: 1px solid #d0d7de;
+  box-shadow: -2px 0 15px rgba(0, 0, 0, 0.03);
   z-index: 1000;
   display: flex;
   flex-direction: column;
-  overflow: hidden; /* Hide body scrollbar */
-  /* resize: horizontal; Make sidebar resizable */
-  min-width: 250px; /* Minimum width */
-  max-width: 500px; /* Maximum width */
-  padding-left: 6px;
+  overflow: hidden;
+  min-width: 280px;
+  max-width: 500px;
 }
 
-/* Add a drag handle on the left side */
-body::before {
-  content: "";
+/* Resize handle */
+#resize-handle {
   position: absolute;
-  left: 0;
   top: 0;
-  width: 5px;
+  left: 0;
+  width: 4px;
   height: 100%;
-  background-color: #f0f0f0;
-  /* cursor: ew-resize; */
-  z-index: 1001;
+  background-color: #d0d7de;
+  cursor: col-resize;
+  z-index: 2000;
+  transition: background-color 0.2s ease;
 }
 
-body::before:hover {
-  background-color: #7c88ff;
+#resize-handle:hover {
+  background-color: #2d8cff;
 }
 
 #sidebar-content {
   display: flex;
   flex-direction: column;
   height: 100%;
-  padding: 12px;
-  overflow-y: auto; /* Single scrollbar for entire content */
-  scrollbar-width: thin; /* For Firefox */
-  scrollbar-color: #d1d5db #f1f1f1; /* For Firefox */
-  padding-left: 5px;
+  padding: 16px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #b1b9c4 #f0f4f8;
 }
 
-/* Hide scrollbar for Chrome, Safari and Opera */
+/* Scrollbar styling */
 #sidebar-content::-webkit-scrollbar {
-  width: 5px;
+  width: 4px;
 }
 
 #sidebar-content::-webkit-scrollbar-track {
-  background: #f1f1f1;
-  border-radius: 10px;
+  background: #f0f4f8;
+  border-radius: 8px;
 }
 
 #sidebar-content::-webkit-scrollbar-thumb {
-  background: #d1d5db;
-  border-radius: 10px;
+  background: #b1b9c4;
+  border-radius: 8px;
 }
 
 #sidebar-content::-webkit-scrollbar-thumb:hover {
-  background: #a1a1aa;
+  background: #8996a5;
 }
 
 /* Header */
 h1 {
-  font-size: 16px;
+  font-size: 18px;
   font-weight: 600;
-  color: #333;
-  margin-bottom: 12px;
-  padding-bottom: 10px;
-  border-bottom: 1px solid #f0f0f0;
+  color: #1a365d;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #d0d7de;
+  letter-spacing: -0.01em;
 }
 
 /* API Key section */
 #api-key-input-area {
-  margin-bottom: 15px;
-  padding-bottom: 12px;
-  border-bottom: 1px solid #f0f0f0;
+  margin-bottom: 18px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #d0d7de;
 }
 
 #api-key-input-area label {
   display: block;
-  margin-bottom: 6px;
-  font-size: 13px;
-  color: #555;
+  margin-bottom: 8px;
+  font-size: 14px;
+  color: #2d3748;
   font-weight: 500;
 }
 
 #api-key {
   width: 100%;
-  padding: 8px 10px;
-  border: 1px solid #e0e0e0;
-  border-radius: 6px;
-  font-size: 13px;
-  color: #333;
-  background-color: #f9f9f9;
+  padding: 10px 12px;
+  border: 1px solid #d0d7de;
+  border-radius: 8px;
+  font-size: 14px;
+  color: #1a365d;
+  background-color: #ffffff;
   transition: all 0.2s ease;
 }
 
 #api-key:focus {
   outline: none;
-  border-color: #7c88ff;
+  border-color: #2d8cff;
   background-color: #fff;
-  box-shadow: 0 0 0 2px rgba(124, 136, 255, 0.15);
+  box-shadow: 0 0 0 3px rgba(45, 140, 255, 0.1);
 }
 
 #save-api-key {
-  margin-top: 8px;
-  padding: 6px 12px;
-  background-color: #7c88ff;
+  margin-top: 10px;
+  padding: 8px 16px;
+  background-color: #2d8cff;
   color: white;
   border: none;
-  border-radius: 6px;
-  font-size: 13px;
+  border-radius: 8px;
+  font-size: 14px;
   font-weight: 500;
   cursor: pointer;
-  transition: background-color 0.2s ease;
+  transition: all 0.2s ease;
 }
 
 #save-api-key:hover {
-  background-color: #5a67e0;
+  background-color: #0066e3;
+  transform: translateY(-1px);
+}
+
+#save-api-key:active {
+  transform: translateY(0);
 }
 
 #api-key-status {
-  margin-top: 6px;
-  font-size: 12px;
-  color: #10b981;
+  margin-top: 8px;
+  font-size: 13px;
+  color: #0d9488;
 }
 
 #api-key-status.error {
-  color: #ef4444;
+  color: #dc2626;
 }
 
 /* Main chat area */
@@ -149,9 +150,9 @@ h1 {
   display: flex;
   flex-direction: column;
   flex-grow: 1;
-  background-color: #ffffff;
-  border-radius: 8px;
-  overflow: visible; /* Remove internal scrollbar */
+  background-color: #f0f4f8;
+  border-radius: 12px;
+  overflow: visible;
 }
 
 #page-and-selection {
@@ -161,71 +162,128 @@ h1 {
 #chat-history {
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  /* Remove overflow-y to eliminate internal scrollbar */
-  padding: 6px 2px;
+  gap: 12px;
+  padding: 4px 0;
+  margin-bottom: 10px;
 }
 
 /* Chat message styling */
 .user-message, .ai-response {
-  padding: 10px 12px;
-  border-radius: 8px;
-  font-size: 13px;
-  line-height: 1.5;
-  max-width: 95%; /* Slightly larger max-width */
+  padding: 12px 14px;
+  border-radius: 12px;
+  font-size: 14px;
+  line-height: 1.6;
+  max-width: 98%; /* Increased width */
+  width: 98%; /* Set explicit width */
   position: relative;
-  overflow-wrap: break-word; /* Prevent text overflow */
+  overflow-wrap: break-word;
   word-break: break-word;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  white-space: normal; /* Ensure text wraps */
 }
 
 .user-message {
   align-self: flex-end;
-  background-color: #7c88ff;
+  background-color: #2d8cff;
   color: white;
-  border-bottom-right-radius: 2px;
-  white-space: pre-line;
+  border-bottom-right-radius: 4px;
+}
+
+.user-message p, .user-message blockquote, .user-message details,
+.user-message ul, .user-message ol, .user-message pre {
+  max-width: 100%;
+  overflow-wrap: break-word;
+  word-break: break-word;
+  white-space: normal;
 }
 
 .ai-response {
   align-self: flex-start;
-  background-color: #f0f2ff;
-  color: #333;
-  border-bottom-left-radius: 2px;
+  background-color: #ffffff;
+  color: #2d3748;
+  border-bottom-left-radius: 4px;
+  border: 1px solid #e2e8f0;
+}
+
+.ai-response p, .ai-response ul, .ai-response ol,
+.ai-response blockquote, .ai-response pre {
+  max-width: 100%;
+  overflow-wrap: break-word;
+  word-break: break-word;
+}
+
+/* Force all content to respect container width */
+#chat-history * {
+  max-width: 100%;
+}
+
+/* Lists inside AI responses */
+.ai-response ul, .ai-response ol {
+  padding-left: 20px;
+  margin: 8px 0;
+}
+
+.ai-response li {
+  margin-bottom: 6px;
+}
+
+.ai-response p {
+  margin-bottom: 8px;
+}
+
+.ai-response p:last-child {
+  margin-bottom: 0;
+}
+
+/* Blockquote styling */
+.ai-response blockquote, .user-message blockquote {
+  border-left: 3px solid rgba(0, 0, 0, 0.1);
+  padding-left: 12px;
+  margin: 8px 0;
+  font-style: italic;
+  color: #4a5568;
+}
+
+.user-message blockquote {
+  border-left-color: rgba(255, 255, 255, 0.3);
+  color: rgba(255, 255, 255, 0.9);
 }
 
 /* Question input area */
 #question-input-area {
-  margin-top: 12px;
-  border-top: 1px solid #f0f0f0;
-  padding-top: 12px;
+  margin-top: 16px;
+  border-top: 1px solid #d0d7de;
+  padding-top: 16px;
 }
 
 #question-input-area label {
   display: block;
-  margin-bottom: 6px;
-  font-size: 13px;
-  color: #555;
+  margin-bottom: 8px;
+  font-size: 14px;
+  color: #2d3748;
   font-weight: 500;
 }
 
 #user-question {
   width: 100%;
-  min-height: 70px;
-  padding: 10px;
-  border: 1px solid #e0e0e0;
-  border-radius: 8px;
+  min-height: 80px;
+  padding: 12px 14px;
+  border: 1px solid #d0d7de;
+  border-radius: 10px;
   resize: none;
   font-family: inherit;
-  font-size: 13px;
-  line-height: 1.5;
-  color: #333;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #1a365d;
+  background-color: #ffffff;
   transition: all 0.2s ease;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
 }
 
 #user-question:focus {
   outline: none;
-  border-color: #7c88ff;
-  box-shadow: 0 0 0 2px rgba(124, 136, 255, 0.15);
+  border-color: #2d8cff;
+  box-shadow: 0 0 0 3px rgba(45, 140, 255, 0.1);
 }
 
 /* Loading indicator */
@@ -234,10 +292,10 @@ h1 {
   align-items: center;
   justify-content: center;
   gap: 6px;
-  padding: 6px;
-  color: #555;
+  padding: 10px;
+  color: #4a5568;
   font-style: italic;
-  font-size: 13px;
+  font-size: 14px;
 }
 
 .loading-indicator::after {
@@ -252,36 +310,59 @@ h1 {
 
 /* Error message */
 .error-message {
-  color: #ef4444;
-  padding: 10px;
+  color: #dc2626;
+  padding: 12px;
   background-color: #fef2f2;
-  border-radius: 6px;
-  font-size: 12px;
-  margin: 6px 0;
-}
-
-/* Add styling for chat message timestamps or other metadata */
-.message-timestamp {
-  font-size: 10px;
-  opacity: 0.7;
-  margin-top: 4px;
-}
-
-/* Your Question label at bottom */
-.your-question-label {
+  border-radius: 8px;
   font-size: 13px;
-  font-weight: 500;
-  color: #555;
-  margin-bottom: 6px;
+  margin: 8px 0;
+  border-left: 3px solid #dc2626;
 }
 
-#resize-handle {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 5px; /* Width of the handle */
-    height: 100%;
-    background-color: #ddd; /* Light gray handle background */
-    cursor: col-resize; /* Cursor style to indicate resizing */
-    z-index: 2000
+/* Message metadata */
+.message-timestamp {
+  font-size: 11px;
+  opacity: 0.7;
+  margin-top: 6px;
+  text-align: right;
+}
+
+/* Code blocks in responses */
+.ai-response pre, .user-message pre {
+  background-color: rgba(0, 0, 0, 0.05);
+  padding: 10px;
+  border-radius: 6px;
+  overflow-x: auto;
+  margin: 8px 0;
+  font-family: 'Menlo', 'Monaco', 'Courier New', monospace;
+  font-size: 12px;
+  max-width: 100%;
+}
+
+.user-message pre {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.ai-response code, .user-message code {
+  font-family: 'Menlo', 'Monaco', 'Courier New', monospace;
+  font-size: 12px;
+  background-color: rgba(0, 0, 0, 0.05);
+  padding: 2px 4px;
+  border-radius: 3px;
+}
+
+.user-message code {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+/* Details/content tag handling */
+details {
+  width: 100%;
+  max-width: 100%;
+}
+
+details content, details summary {
+  max-width: 100%;
+  overflow-wrap: break-word;
+  word-break: break-word;
 }
