@@ -32,7 +32,8 @@ function injectSidebar(selectedText, currentTabUrl) { // Modified to accept sele
         sidebarIframe.contentWindow.postMessage({
             action: "setInitialContext", // Action for the sidebar to handle
             selectedText: selectedText,          // The selected text itself
-            tabUrl: currentTabUrl 
+            tabUrl: currentTabUrl,
+            docbody: document.body.innerHTML
         }, "*"); // '*' is for origin, for simplicity in extensions, but be mindful in web apps
 
         sidebarIframe.contentWindow.postMessage({  // <-- NEW MESSAGE

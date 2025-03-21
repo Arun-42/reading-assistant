@@ -315,6 +315,7 @@ window.addEventListener('message', function(event) {
         if (event.data.action === "setInitialContext") {
             const selectedText = event.data.selectedText;
             const tabUrl = event.data.tabUrl; // Get tabUrl from message
+            const documentBody = event.data.docbody;
             console.log("Sidebar received initial context. Selected text:", selectedText, "Tab URL:", tabUrl);
 
             // Store selected text and page text in localStorage for prompt construction later
@@ -327,8 +328,23 @@ window.addEventListener('message', function(event) {
 
             // Start text extraction immediately when sidebar opens
             if (tabUrl) {
-                extractPageContent(tabUrl)
-                    .then(extractedText => {
+                // --- TEXT EXTRACTION USING TURNDOWN.JS (inside iframe.onload) ---
+                const turndownService = new TurndownService(); // Initialize Turndown
+
+                // Get the HTML content from the whole document body
+                const htmlContent = documentBody; // Or you can target a specific element if needed
+
+                let extractedText = "";
+                try {
+                    extractedText = turndownService.turndown(htmlContent); // Convert HTML to Markdown
+                    console.log("Text extraction with Turndown successful.");
+                } catch (extractionError) {
+                    console.error("Turndown text extraction error:", extractionError);
+                    extractedText = "Error extracting page text."; // Error message if extraction fails
+                }
+
+                // extractPageContent(tabUrl)
+                //     .then(extractedText => {
                         localStorage.setItem('currentPageText', extractedText); // Store extracted page text in localStorage
                         pageContextArea.innerText = extractedText; // Set extracted text in page context area
 
@@ -342,13 +358,13 @@ window.addEventListener('message', function(event) {
                         userQuestionInput.selectionStart = userQuestionInput.selectionEnd = contextPromptForInput.length; // Set cursor to end
 
 
-                    })
-                    .catch(extractionError => {
-                        localStorage.setItem('currentPageText', "Error extracting page text."); // Store error message
-                        pageContextArea.innerText = "COULD NOT LOAD"; // Set error message in page context area
-                        geminiResponseArea.innerHTML = '<div class="ai-response"><span class="error-message">Error extracting page text.</span></div>'; // Show extraction error in chat area - OPTIONAL - you can remove this line if you don't want error in chat history
-                        console.error("Text extraction error:", extractionError);
-                    });
+                    // })
+                    // .catch(extractionError => {
+                    //     localStorage.setItem('currentPageText', "Error extracting page text."); // Store error message
+                    //     pageContextArea.innerText = "COULD NOT LOAD"; // Set error message in page context area
+                    //     geminiResponseArea.innerHTML = '<div class="ai-response"><span class="error-message">Error extracting page text.</span></div>'; // Show extraction error in chat area - OPTIONAL - you can remove this line if you don't want error in chat history
+                    //     console.error("Text extraction error:", extractionError);
+                    // });
             }
         }
     }
