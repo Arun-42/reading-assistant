@@ -16,6 +16,14 @@ const pageContextArea = document.getElementById('page-context-area');
 const selectedTextArea = document.getElementById('selected-text-area');
 const chatHistory = document.getElementById('chat-history');
 
+// Configure marked.js to use highlight.js
+marked.setOptions({
+    highlight: function(code, lang) {
+        return hljs.highlight(code, { language: lang, ignoreIllegals: true }).value;
+    },
+    langPrefix: 'hljs language-' // Prefix for code block classes
+});
+
 // Function to save API key to storage
 function saveApiKey(key) {
     return browser.storage.local.set({ geminiApiKey: key }); // Store as 'geminiApiKey'
@@ -39,6 +47,8 @@ document.addEventListener('DOMContentLoaded', () => {
             apiKeyInput.value = storedKey; // Pre-fill input field
             apiKeyStatus.textContent = "API key loaded."; // Update status message
             apiKeyStatus.className = ""; // Remove error class if present
+            let apiarea = document.getElementById('api-key-input-area');
+            apiarea.style.display = 'none';
         } else {
             apiKeyStatus.textContent = "API key not set."; // Indicate key not set yet
             apiKeyStatus.className = "error"; // Add error class for styling (e.g., red color)
@@ -98,16 +108,16 @@ document.addEventListener('DOMContentLoaded', function() {
 //     }
 //   });
   
-  document.addEventListener('mouseup', function() {
-    if (isResizing) {
-      isResizing = false;
-      document.body.style.transition = '';
+//   document.addEventListener('mouseup', function() {
+//     if (isResizing) {
+//       isResizing = false;
+//       document.body.style.transition = '';
       
-      // Remove overlay
-      const overlay = document.getElementById('resize-overlay');
-      if (overlay) overlay.remove();
-    }
-  });
+//       // Remove overlay
+//       const overlay = document.getElementById('resize-overlay');
+//       if (overlay) overlay.remove();
+//     }
+//   });
 });
 
 
@@ -208,9 +218,10 @@ userQuestionInput.addEventListener('keydown', function(event) {
                 /(<content>.*?<\/content>)/gs, 
                 '<details>$1</details>'
             );
-            userMessageDiv.innerHTML = wrappedContent;
+            userMessageDiv.innerHTML = marked.parse(wrappedContent);
         } else {
-            userMessageDiv.innerHTML = contextPrompt;
+            // userMessageDiv.innerHTML = contextPrompt;
+            userMessageDiv.innerHTML = marked.parse(contextPrompt);
         }
         chatHistory.appendChild(userMessageDiv); // Append to chatHistory, not geminiResponseArea
 
@@ -252,12 +263,19 @@ userQuestionInput.addEventListener('keydown', function(event) {
                     let aiResponseContent = { role: "model", parts: [] }; // Initialize AI response content
                     conversationHistory.push(aiResponseContent); // Add empty AI response to history
 
+                    let aiMessageMarkdown = "";
+
                     handleStreamingResponse(response,
                         (data) => { // messageCallback - modified to append to conversation history
                             if (data.candidates && data.candidates[0].content && data.candidates[0].content.parts) {
                                 const textPart = data.candidates[0].content.parts[0].text;
                                 if (textPart) {
-                                    aiResponseDiv.textContent += textPart; // Append to AI response container
+                                                                        // Append the new chunk to the markdown accumulator
+                                    aiMessageMarkdown += textPart;
+                                    // Update the displayed message using marked to render markdown:
+                                    aiResponseDiv.innerHTML = marked.parse(aiMessageMarkdown);
+                                    // Save the chunk into conversation history if needed
+                        
                                     conversationHistory[conversationHistory.length - 1].parts.push({ text: textPart }); // Append chunk to history
                                     geminiResponseArea.scrollTop = geminiResponseArea.scrollHeight;
                                 }

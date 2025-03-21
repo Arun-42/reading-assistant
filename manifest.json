@@ -1,26 +1,27 @@
 {
-    "manifest_version": 2,
-    "name": "Text QA Extension",
-    "version": "0.1",
-    "description": "Basic structure for Text QA Extension",
-    "icons": {
-        "48": "assets/icons/extension_icon.png"
-    },
-    "background": {
-        "scripts": ["background/background.js"]
-    },
-    "permissions": [
-        "contextMenus",
-        "activeTab",
-        "storage",
-        "https://generativelanguage.googleapis.com/",
-        "https://md.dhr.wtf/",
-        "tabs"
-    ],
-    "content_scripts": [
-        {
-            "matches": ["<all_urls>"],
-            "js": ["content/content.js"]
-        }
-    ]
+  "manifest_version": 2,
+  "name": "Text QA Extension",
+  "version": "0.1",
+  "description": "Basic structure for Text QA Extension",
+  "icons": {
+    "48": "assets/icons/extension_icon.png"
+  },
+  "background": {
+    "scripts": ["background/background.js"]
+  },
+  "permissions": [
+    "contextMenus",
+    "activeTab",
+    "storage",
+    "https://generativelanguage.googleapis.com/",
+    "https://md.dhr.wtf/",
+    "tabs"
+  ],
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content/content.js"]
+    }
+  ],
+  "content_security_policy": "script-src 'self' 'wasm-unsafe-eval' https://cdn.jsdelivr.net/npm/marked/ https://cdnjs.cloudflare.com/ajax/libs/highlight.js/; object-src 'self'"
 }
