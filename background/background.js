@@ -32,3 +32,15 @@ browser.contextMenus.onClicked.addListener((info, tab) => {
             });
     }
 });
+
+// Listen for clicks on the extension (browser) button
+browser.browserAction.onClicked.addListener((tab) => {
+    console.log("Extension button clicked!");
+    // You can send an empty selectedText or add any default data as needed.
+    // Note: In a button click you might not have a text selection so leave it empty.
+    browser.tabs.sendMessage(tab.id, {
+        action: "openSidebar",
+        selectedText: "",
+        currentTabUrl: tab.url
+    });
+});
